@@ -16,54 +16,47 @@ import javax.swing.JPanel;
 
 public class Matches {
 	
-	Game game;
+	private int MAX_MATCHES = 20;
+	private int NUM_OF_BUTTONS_CHOISE = 10;
 	
-	JFrame frame;
-	JPanel panel;
-	JLabel label;
-	JButton but1, but2, butNew;
-	JButton [] butChoise;
-	int numOfButtonsChose = 10;
-	JPanel buttonsPanel;
-	JPanel buttonsPanelNew;
-	JPanel buttonsPanelStart;
-	JPanel buttonsPanelChose;
-	//int numOfMatches = 0; 
-	int maxMatches = 20;
-	Image emptyField;
-	Image matchField;
-	Image gameIcon;
-	int imageSizeX;
-	int imageSizeY;
+	private Game game;
 	
-	Font font = new Font("Arial", Font.ITALIC, 38);
+	private JFrame frame;
+	private JPanel panel;
+	private JLabel label;
+	private JButton but1, but2, butNew;
+	private JButton [] butChoise;
+	private JPanel buttonsPanel;
+	private JPanel buttonsPanelNew;
+	private JPanel buttonsPanelStart;
+	private JPanel buttonsPanelChose;
 	
-	ButtonListener buttonListener = new ButtonListener();
+	private ButtonListener buttonListener;
 	
-	
+	private Image emptyField;
+	private Image matchField;
+	private Image gameIcon;
+	private int imageSizeX;
+	private int imageSizeY;
 
-		
+	private Font font = new Font("Arial", Font.ITALIC, 38);
+	
 	public static void main(String [] args) {
-			
+		
 		new Matches();
-			
+		
 	}
 		
 	Matches() {
-		
-		game = new Game(maxMatches);
+		game = new Game(MAX_MATCHES);
 		initImages();
 		initPanel();
 		initLabel();
 		initButtons();
-		initFrame();
-		//start();
-		
-			
+		initFrame();		
 	}
 	
 	private void initImages() {
-		
 		emptyField = new ImageIcon(getClass().
 							getResource("img/drawable.png")).getImage();
 		matchField = new ImageIcon(getClass().
@@ -71,72 +64,79 @@ public class Matches {
 		gameIcon = new ImageIcon(getClass().
 				getResource("img/iconMatches.png")).getImage();
 		imageSizeX = emptyField.getWidth(null);
-		imageSizeY = emptyField.getHeight(null);
-		
+		imageSizeY = emptyField.getHeight(null);	
 	}
 	
 	private void initPanel() {
-		
 		panel = new JPanel() {
 						public void paintComponent(Graphics g) {
 							super.paintComponent(g);
 							
-							for(int i = 0; i < maxMatches; i++){
+							for(int i = 0; i < MAX_MATCHES; i++){
 								if(i < game.getNumOfMatches()){ 
 									g.drawImage(matchField, imageSizeX * i, 0, null);
 								} else {
 									g.drawImage(emptyField, imageSizeX * i, 0, null);
 								}
 							}
-						
+					
 						}
 					};
-		panel.setPreferredSize(new Dimension(maxMatches * imageSizeX, imageSizeY));
+		panel.setPreferredSize(new Dimension(MAX_MATCHES * imageSizeX, imageSizeY));
 	}
 	
 	private void initLabel() {
-		
 		label = new JLabel("Начнем новую игру?");
 		label.setFont(font);
-		label.setHorizontalAlignment(JLabel.CENTER);
-		
+		label.setHorizontalAlignment(JLabel.CENTER);	
 	}
 	
 	private void initButtons() {
-		
+		createButtonsPanels();
+		createButtons();
+		addButtonsToPanels();	
+	}
+	
+	private void createButtonsPanels() {
 		buttonsPanel = new JPanel();
-		buttonsPanel.setPreferredSize(new Dimension(maxMatches * imageSizeX, 100));
+		buttonsPanel.setPreferredSize(new Dimension(MAX_MATCHES * imageSizeX, 100));
 		buttonsPanel.setLayout(new GridLayout(1, 1));
+		
 		buttonsPanelNew = new JPanel();
-		//buttonsPanelNew.setPreferredSize(new Dimension(maxMatches * imageSizeX, 100));
 		buttonsPanelNew.setLayout(new GridLayout(1, 1));
+		
 		buttonsPanelStart = new JPanel();
-		//buttonsPanelStart.setPreferredSize(new Dimension(maxMatches * imageSizeX, 100));
 		buttonsPanelStart.setLayout(new GridLayout(1, 1));
+		
 		buttonsPanelChose = new JPanel();
-		//buttonsPanelChose.setPreferredSize(new Dimension(maxMatches * imageSizeX, 100));
 		buttonsPanelChose.setLayout(new GridLayout(1, 1));
+	}
+	
+	private void createButtons() {
+		buttonListener = new ButtonListener();
 		
-		
-		//здесь неплохо было бы воспользоваться перечислением, чтобы не повторять код
 		but1 = new JButton("1");
-		but1.setFont(font);
-		but1.addActionListener(buttonListener);
+		initButton(but1);
 		but2 = new JButton("2");
-		but2.setFont(font);
-		but2.addActionListener(buttonListener);
-		butNew = new JButton("New Game");
-		butNew.setFont(font);
-		butNew.addActionListener(buttonListener);
-		butChoise = new JButton [numOfButtonsChose];
+		initButton(but2);
+		butNew = new JButton("Новая игра");
+		initButton(butNew);
 		
-		for(int i = 0; i < numOfButtonsChose; i++){
+		butChoise = new JButton [NUM_OF_BUTTONS_CHOISE];
+		for(int i = 0; i < NUM_OF_BUTTONS_CHOISE; i++){
 			butChoise[i] = new JButton("" + (i + 11));
 			butChoise[i].setFont(font);
 			butChoise[i].addActionListener(buttonListener);
 			buttonsPanelStart.add(butChoise[i]);
 		}
-		
+	}
+	
+	private void initButton(JButton btn) {
+		btn.setFont(font);
+		btn.addActionListener(buttonListener);
+	}
+	
+	private void addButtonsToPanels() {
 		buttonsPanelNew.add(butNew);
 		buttonsPanelChose.add(but1);
 		buttonsPanelChose.add(but2);
@@ -144,7 +144,6 @@ public class Matches {
 	}
 	
 	private void initFrame() {
-		
 		frame = new JFrame("Спички");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(BorderLayout.NORTH, panel);
@@ -157,10 +156,6 @@ public class Matches {
 		frame.setVisible(true);
 	}
 	
-	
-	
-	
-	
 	class ButtonListener implements ActionListener {
 		
 		public void actionPerformed(ActionEvent ae) {
@@ -168,11 +163,10 @@ public class Matches {
 			String actionComand = ae.getActionCommand();
 			
 			if(actionComand.equals("1") || actionComand.equals("2")){
-				
 				int matchesDel = Integer.parseInt(actionComand);
-				//game.removeMatches(matchesDel);
 				String resultOfGame = game.getResult(matchesDel);
 				label.setText("Компьютер удалил " + game.getCompDel() + " спички(-у). Сколько удалите Вы?");
+				
 				if(resultOfGame.equals("humanWin")) {
 					label.setText("Вы выиграли!!! Начнем новую игру?");
 					changePanel(buttonsPanelNew);
@@ -180,19 +174,15 @@ public class Matches {
 					label.setText("Компьютер удалил " + game.getCompDel() + " спички(-у) и выиграл((( Начнем новую игру?");
 					changePanel(buttonsPanelNew);
 				}
-				panel.repaint();
 				
-			} else if(actionComand.equals("New Game")){
-				
+				panel.repaint();		
+			} else if(actionComand.equals("Новая игра")){
 				label.setText("Со скольки спичек начнем?");
-				changePanel(buttonsPanelStart);
-				
+				changePanel(buttonsPanelStart);	
 			} else {
-				
 				game.setNumOfMatches(Integer.parseInt(actionComand));
 				changePanel(buttonsPanelChose);
-				label.setText("Удаляем одну или две спички?");
-				
+				label.setText("Удаляем одну или две спички?");	
 			}	
 		}
 		
@@ -201,9 +191,7 @@ public class Matches {
 			buttonsPanel.add(newPanel);
 			frame.add(BorderLayout.SOUTH, buttonsPanel);
 			frame.repaint();
-			//frame.setVisible(true);
-		}
-		
+		}	
 	}
 }
 

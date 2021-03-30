@@ -5,35 +5,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-
 public class Computer {
 	
+	private final int DEPTH_OF_MEMORY = 10;
+	
 	private int memory[][];
-	private final int depthOfMemory = 10;
 	private final int correctMemory[];
 	private int maxMatches;
-	
-	Random rand = new Random();
-	
+	private Random rand;
 	private int compDel;
 	
-	Computer(int maxMatches){
+	public Computer(int maxMatches){
+		rand = new Random();
 		this.maxMatches = maxMatches;
-		memory = new int[maxMatches][depthOfMemory];
+		memory = new int[maxMatches][DEPTH_OF_MEMORY];
 		correctMemory = new int[maxMatches];
-		createMemory();
-		//saveMemory();
-		
+		createMemory();	
 	}
 	
-	void createMemory() {
-		
+	public void createMemory() {
 		try{
 			FileReader fileReader = new FileReader("memory.txt");
 			BufferedReader reader = new BufferedReader(fileReader);
 			char ch;
 			for(int i = 0; i < maxMatches; i++){
-				for(int j = 0; j < depthOfMemory; j++){
+				for(int j = 0; j < DEPTH_OF_MEMORY; j++){
 					ch = (char) reader.read();
 					if(ch != '1' && ch != '2'){
 						ch = '1';
@@ -43,61 +39,48 @@ public class Computer {
 				reader.read();	
 			}
 			reader.close();
-			
 		} catch(IOException ioe) {
 			System.out.println("Ничего не вышло, создаем новую память");
 			for(int i = 0; i < maxMatches; i++){
-				for(int j = 0; j < depthOfMemory; j++){
+				for(int j = 0; j < DEPTH_OF_MEMORY; j++){
 					memory[i][j] = 1;
 				}
 			System.out.println(" ");
 			}
 		}
-		
 		resetCorrectMemory();
 	}
 	
-	void resetCorrectMemory() {
+	public void resetCorrectMemory() {
 		for(int j = 0; j < maxMatches; j++) {
 			correctMemory[j] = -1;
 		}
 	}
 	
-	void saveMemory() {
-		
+	public void saveMemory() {	
 		try{
-			
 			FileWriter fileWriter = new FileWriter("memory.txt");
 			BufferedWriter writer = new BufferedWriter(fileWriter);
 			for(int i = 0; i < maxMatches; i++){
-				for(int j = 0; j < depthOfMemory; j++){
+				for(int j = 0; j < DEPTH_OF_MEMORY; j++){
 					writer.write("" + memory[i][j]);
 				}
 				writer.write("\n");
 			}
-			writer.close();
-			
+			writer.close();	
 		} catch(IOException ioe) {
 			System.out.println("Сохранить память не удалось");
-		}
-		
+		}	
 	}
 	
-	int movie(int numOfMatches) {
-		
-		int depth = rand.nextInt(depthOfMemory);
-		System.out.println("depth = " + depth);
+	public int movie(int numOfMatches) {
+		int depth = rand.nextInt(DEPTH_OF_MEMORY);
 		correctMemory[numOfMatches - 1] = depth;
 		compDel = memory[numOfMatches - 1][depth];
-		//numOfMatches -= compDel;
 		return compDel;
-	
 	}
 	
-	
-	
-	
-	void corMemory(boolean humanWin) {
+	public void corMemory(boolean humanWin) {
 		
 		if(humanWin == true){
 			for(int i = 0; i < maxMatches; i++){
@@ -111,21 +94,17 @@ public class Computer {
 				System.out.println("" + correctMemory[i]);
 			}
 		saveMemory();
-		
 		}
 		
-		
 		if(humanWin == false){
+		
 			for(int i = 0; i < maxMatches; i++){
+				
 				if(correctMemory[i] != -1){
-					//if(memory[i][correctMemory[i]] < 2){
-					//	memory[i][correctMemory[i]] += 1;
-					//} else {
-					//	memory[i][correctMemory[i]] = 1;
-					//}
 					int cellValue = memory[i][correctMemory[i]];
 					int count = 0;
-					for(int j = 0; j < depthOfMemory; j++){
+					for(int j = 0; j < DEPTH_OF_MEMORY; j++){
+						
 						if(memory[i][j] != cellValue){
 							memory[i][j] = cellValue;
 							count++;
@@ -134,19 +113,11 @@ public class Computer {
 						if(count > 1){
 							break;
 						}
-						
 					}
 				}
-				System.out.println("" + correctMemory[i]);
 			}
-		saveMemory();
-			
+		saveMemory();	
 		}
 		resetCorrectMemory();
 	}
-	
-	
-	
-	
-
 }
