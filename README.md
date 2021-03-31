@@ -1,4 +1,6 @@
-#Game "Matches".
+#Matches Game "Matches".
+
+
 There are from 11 to 20 matches on the field.
 
 The game is played against the computer. The task of the players is to remove one or two matches from the field, the one who takes the last matches wins.
